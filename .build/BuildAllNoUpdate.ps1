@@ -1,6 +1,12 @@
 $script_dir = Split-Path -parent $MyInvocation.MyCommand.Definition
 $baseDir = Join-Path -path $script_dir ".." -resolve
 
+
+# Change this to the path fragment for stored dependencies:
+#$dependency_path = "lib" #  ruby-style pattern
+$dependency_path = "Dependencies\Internal" # pattern for the two supplied demos
+
+
 echo "Using $baseDir as base directory"
 Write-Host "Platform Build: Cleaning out all built output, to ensure that clean dependencies are copied" -fo cyan
 
@@ -16,7 +22,7 @@ function Build($directory) {
 function DistributeBinaryDependencies($directory) {
 	# TODO: create a pattern file to read for these
 	gc "DependencyPatterns.txt" | %{
-		& "$script_dir\Tools\SyncDeps.exe" $baseDir "*\$directory\*\bin\Release\$_" "*\lib\$_"
+		& "$script_dir\Tools\SyncDeps.exe" $baseDir "*\$directory\*\bin\Release\$_" "*\$dependency_path\$_"
 	}
 }
 
