@@ -1,6 +1,6 @@
 $script_dir = Split-Path -parent $MyInvocation.MyCommand.Definition
 $baseDir = Join-Path -path $script_dir ".." -resolve
-$rulesDir = Join-Path -path $script_dir "rules" -resolve
+$rulesDir = Join-Path -path $script_dir "..\rules" -resolve
 
 & "$script_dir\StartSshAgent.ps1"
 Write-Progress "Setting up " "git submodules"
