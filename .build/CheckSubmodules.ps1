@@ -9,7 +9,7 @@ Write-Host "Adding submodules" -fo cyan
 cd $baseDir
 
 function AddSubmodule($module, $to) {
-	git submodule add $module '$to'
+	git submodule add $module "'$to'"
 }
 
 function CheckoutMaster($directory) {
