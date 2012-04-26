@@ -4,19 +4,31 @@ $baseDir = Join-Path -path $script_dir ".." -resolve
 & "$script_dir\StartSshAgent.ps1"
 cd $baseDir
 
-function StartsNonSpace($str) {!([System.Char]::IsWhiteSpace($str[0]))}
-
 function Update($directory) {
-	Write-Host "Updating $directory to current master " -fo cyan -NoNewLine
-	Write-Host "Changes will be stashed and re-applied" -fo darkcyan
-	#pushd "$baseDir\$directory"
-	#git checkout lib/* # lib will get updated by build, so drop changed files.
-	#git stash save "automatic stash"
-	#git pull
-	#git stash pop
-	#popd
+	$currentBranch = git branch | ?{$_.StartsWith("*")} | %{$_.Substring(2)}
+	Write-Host "Updating $directory to latest $currentBranch " -fo cyan -NoNewLine
+	pushd "$baseDir\$directory"
+	git checkout lib/* | out-null # lib will get updated by build, so drop changed files.
+	$changes = (git status --porcelain).Count -ne $null 
+	if ($changes -eq $true) {
+		Write-Host "Changes will be stashed and re-applied" -fo darkcyan
+		git stash save "automatic stash"
+	} else {
+		Write-Host "No local changes" -fo darkcyan
+	}
+	
+	git pull
+	
+	if ($changes) {git stash pop}
+	popd
 }
 
-gc "$script_dir\RequiredModules.txt" | ConvertFrom-StringData | %{Update($_.Keys)}
+gc "BuildModules.txt" | %{
+	$data = $_.Split('=')
+	$directory = $data[0].Trim()
+	$module = $data[1].Trim()
+	
+	Update($directory)
+}
 
 Write-Host "----[ All Modules Updated ]----" -fo green
