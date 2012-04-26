@@ -2,7 +2,7 @@ $script_dir = Split-Path -parent $MyInvocation.MyCommand.Definition
 $baseDir = Join-Path -path $script_dir ".." -resolve
 $rulesDir = Join-Path -path $script_dir "..\rules" -resolve
 
-$dependency_path = gc "$rulesDir\DependencyPath.rule"
+$dependency_path = (gc "$rulesDir\DependencyPath.rule").Replace("\","/") #fix for git's Linux conventions
 
 & "$script_dir\StartSshAgent.ps1"
 cd $baseDir
@@ -11,7 +11,7 @@ function Update($directory) {
 	$currentBranch = git branch | ?{$_.StartsWith("*")} | %{$_.Substring(2)}
 	Write-Host "Updating $directory to latest $currentBranch " -fo cyan -NoNewLine
 	pushd "$baseDir\$directory"
-	git checkout "$dependency_path/*" | out-null # lib will get updated by build, so drop changed files.
+	$quiet = git checkout "$dependency_path/*" # lib will get updated by build, so drop changed files.
 	$changes = (git status --porcelain).Count -ne $null 
 	if ($changes -eq $true) {
 		Write-Host "Changes will be stashed and re-applied" -fo darkcyan
