@@ -1,2 +1,0 @@
-ProjectA = git://github.com/i-e-b/z_demo_01.git
-ProjectB = git://github.com/i-e-b/z_demo_02.git

@@ -23,7 +23,7 @@ function Update($directory) {
 	popd
 }
 
-gc "BuildModules.txt" | %{
+gc "Modules.rule" | %{
 	$data = $_.Split('=')
 	$directory = $data[0].Trim()
 	$module = $data[1].Trim()

@@ -21,7 +21,7 @@ function Build($directory) {
 
 function DistributeBinaryDependencies($directory) {
 	# TODO: create a pattern file to read for these
-	gc "DependencyPatterns.txt" | %{
+	gc "DependencyPatterns.rule" | %{
 		& "$script_dir\Tools\SyncDeps.exe" $baseDir "*\$directory\*\bin\Release\$_" "*\$dependency_path\$_"
 	}
 }
@@ -32,7 +32,7 @@ function BuildAndDistribute($directory) {
 }
 
 # BuildModules.txt must be in bottom-up dependency order:
-gc "BuildModules.txt" | %{
+gc "Modules.rule" | %{
 	$data = $_.Split('=')
 	$directory = $data[0].Trim()
 	$module = $data[1].Trim()
