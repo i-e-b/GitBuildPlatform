@@ -1,7 +1,8 @@
 $script_dir = Split-Path -parent $MyInvocation.MyCommand.Definition
 $baseDir = Join-Path -path $script_dir ".." -resolve
+$rulesDir = Join-Path -path $script_dir ".rules" -resolve
 
-$dependency_path = gc "$script_dir\_DependencyPath.rule"
+$dependency_path = gc "$rulesDir\DependencyPath.rule"
 
 echo "Using $baseDir as base directory"
 Write-Host "Platform Build: Cleaning out all built output, to ensure that clean dependencies are copied" -fo cyan
@@ -28,7 +29,7 @@ function BuildAndDistribute($directory) {
 }
 
 # BuildModules.txt must be in bottom-up dependency order:
-gc "Modules.rule" | %{
+gc "$rulesDir\Modules.rule" | %{
 	$data = $_.Split('=')
 	$directory = $data[0].Trim()
 	$module = $data[1].Trim()

@@ -1,5 +1,6 @@
 $script_dir = Split-Path -parent $MyInvocation.MyCommand.Definition
 $baseDir = Join-Path -path $script_dir ".." -resolve
+$rulesDir = Join-Path -path $script_dir ".rules" -resolve
 
 & "$script_dir\StartSshAgent.ps1"
 Write-Progress "Setting up " "git submodules"
@@ -21,7 +22,7 @@ function CheckoutMaster($directory) {
 }
 
 Write-Host "Updating submodules" -fo cyan
-gc "Modules.rule" | %{
+gc "$rulesDir\Modules.rule" | %{
 	$data = $_.Split('=')
 	$directory = $data[0].Trim()
 	$module = $data[1].Trim()
