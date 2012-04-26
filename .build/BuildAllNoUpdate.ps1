@@ -1,11 +1,7 @@
 $script_dir = Split-Path -parent $MyInvocation.MyCommand.Definition
 $baseDir = Join-Path -path $script_dir ".." -resolve
 
-
-# Change this to the path fragment for stored dependencies:
-#$dependency_path = "lib" #  ruby-style pattern
-$dependency_path = "Dependencies\Internal" # pattern for the two supplied demos
-
+$dependency_path = gc "$script_dir\_DependencyPath.rule"
 
 echo "Using $baseDir as base directory"
 Write-Host "Platform Build: Cleaning out all built output, to ensure that clean dependencies are copied" -fo cyan
