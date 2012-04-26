@@ -18,7 +18,7 @@ function Build($directory) {
 
 function DistributeBinaryDependencies($directory) {
 	# TODO: create a pattern file to read for these
-	gc "DependencyPatterns.rule" | %{
+	gc "$rulesDir\DependencyPatterns.rule" | %{
 		& "$script_dir\Tools\SyncDeps.exe" $baseDir "*\$directory\*\bin\Release\$_" "*\$dependency_path\$_"
 	}
 }
@@ -32,7 +32,6 @@ function BuildAndDistribute($directory) {
 gc "$rulesDir\Modules.rule" | %{
 	$data = $_.Split('=')
 	$directory = $data[0].Trim()
-	$module = $data[1].Trim()
 	
 	BuildAndDistribute("$directory")
 }
