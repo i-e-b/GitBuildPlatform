@@ -14,7 +14,10 @@ function Build($directory) {
 }
 
 function DistributeBinaryDependencies($directory) {
-	& "$script_dir\Tools\SyncDeps.exe" $baseDir "*\$directory\*\bin\Release\SevenDigital.*.dll" "*\lib\SevenDigital.*.dll"
+	# TODO: create a pattern file to read for these
+	gc "DependencyPatterns.txt" | %{
+		& "$script_dir\Tools\SyncDeps.exe" $baseDir "*\$directory\*\bin\Release\$_" "*\lib\$_"
+	}
 }
 
 function BuildAndDistribute($directory) {
@@ -22,13 +25,22 @@ function BuildAndDistribute($directory) {
 	DistributeBinaryDependencies($directory)
 }
 
-# In bottom-up dependency order:
-BuildAndDistribute("Media2")
-BuildAndDistribute("Audio")
-BuildAndDistribute("Media")
-BuildAndDistribute("ImageProcessing")
-BuildAndDistribute("BatchProcessing")
-Build("Batcher")
+# BuildModules.txt must be in bottom-up dependency order:
+gc "BuildModules.txt" | %{
+	$data = $_.Split('=')
+	$directory = $data[0].Trim()
+	$module = $data[1].Trim()
+	
+	BuildAndDistribute("$directory")
+}
+
+# If you know which projects need to distribute dependencies, you can optimise by hardcoding like this:
+#BuildAndDistribute("a")
+#Build("b")
+#Build("c")
+#BuildAndDistribute("d")
+#BuildAndDistribute("e")
+#Build("f")
 
 
 Write-Host "----[ All Builds Complete ]----" -fo green
