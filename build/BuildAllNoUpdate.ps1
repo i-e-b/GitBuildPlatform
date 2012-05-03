@@ -1,13 +1,15 @@
 $script_dir = Split-Path -parent $MyInvocation.MyCommand.Definition
 $baseDir = Join-Path -path $script_dir ".." -resolve
 $rulesDir = Join-Path -path $script_dir "..\rules" -resolve
+$ErrorView = "CategoryView"
 
 $dependency_path = gc "$rulesDir\DependencyPath.rule"
 
 echo "Using $baseDir as base directory"
 Write-Host "Platform Build: Cleaning out all built output, to ensure that clean dependencies are copied" -fo cyan
 
-# if any files need cleaned up before build, do it here.
+# Clean up bin and obj folders, to get a really clean build.
+ls $baseDir -Recurse -Include ("bin", "obj") | rm -Recurse -Force -ErrorAction SilentlyContinue
 
 function Build($directory) {
 	pushd "$baseDir\$directory\Build"
