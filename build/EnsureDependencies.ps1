@@ -84,8 +84,8 @@ try {
 
 Write-Progress "Ensuring that system packages are available" "Checking for SQL"
 try {
-    cmd /c SQLCMD.EXE -S ".\SQLEXPRESS" -Q "SELECT '1' " | out-null
-    if ($LASTEXITCODE -ne 0) {
+    $sql_vstr = cmd /c SQLCMD.EXE -S ".\SQLEXPRESS" -Q "SELECT '1' "
+    if ($sql_vstr -notcontains "(1 rows affected)") {
     
         Write-Progress "Ensuring that system packages are available" "SQL is not installed... downloading"
         $msi64 = "http://go.microsoft.com/?linkid=9729746"
