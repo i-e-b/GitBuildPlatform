@@ -4,7 +4,11 @@ $baseDir = Join-Path -path $here ".." -resolve
 
 Write-Progress "Ensuring that system packages are available" "Checking for Git"
 try {
-	cmd /c "git --version" | out-null
+	try {
+		"git --version" | iex | out-null
+	} catch {
+		$LASTEXITCODE = 1
+	}
     if ($LASTEXITCODE -ne 0) {
 		$git_dir = ls ("${env:ProgramFiles}", "${env:ProgramFiles(x86)}") -Filter "git" | %{$_.Fullname} | select-object -first 1
 		if($git_dir -eq $null) {
@@ -44,7 +48,11 @@ try {
 
 Write-Progress "Ensuring that system packages are available" "Checking for Rake"
 try {
-    cmd /c "rake --version" | out-null
+	try {
+		"rake --version" | iex | out-null
+	} catch {
+		$LASTEXITCODE = 1
+	}
     if ($LASTEXITCODE -ne 0) {
         Write-Progress "Ensuring that system packages are available" "Downloading Ruby"
         $clnt = new-object System.Net.WebClient
