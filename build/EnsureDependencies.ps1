@@ -2,14 +2,19 @@ $here = Split-Path -parent $MyInvocation.MyCommand.Definition
 $tools = Join-Path -path $here "Tools" -resolve
 $baseDir = Join-Path -path $here ".." -resolve
 
+function isItThere($cmd) { # hack to work around bugs in ANSICON
+	$vstr = ""
+	try {
+		"$cmd --version" | iex | %{$vstr = $_}
+		return $vstr -match "$cmd"
+	} catch {
+		return $false
+	}
+}
+
 Write-Progress "Ensuring that system packages are available" "Checking for Git"
 try {
-	try {
-		"git --version" | iex | out-null
-	} catch {
-		$LASTEXITCODE = 1
-	}
-    if ($LASTEXITCODE -ne 0) {
+    if (-not (isItThere("git"))) {
 		$git_dir = ls ("${env:ProgramFiles}", "${env:ProgramFiles(x86)}") -Filter "git" | %{$_.Fullname} | select-object -first 1
 		if($git_dir -eq $null) {
 			Write-Host "Please install a recent version of git:" -fo yellow
@@ -48,23 +53,20 @@ try {
 
 Write-Progress "Ensuring that system packages are available" "Checking for Rake"
 try {
-	try {
-		"rake --version" | iex | out-null
-	} catch {
-		$LASTEXITCODE = 1
-	}
-    if ($LASTEXITCODE -ne 0) {
-        Write-Progress "Ensuring that system packages are available" "Downloading Ruby"
-        $clnt = new-object System.Net.WebClient
-        $url = "http://rubyforge.org/frs/download.php/75127/rubyinstaller-1.9.2-p290.exe"
-        $file = ".\ruby_installer.exe"
-        $clnt.DownloadFile($url,$file)
-        Write-Progress "Ensuring that system packages are available" "Running installer"
-        $install = $file + " /silent"
-        cmd /c $install
-        del $file
-        $env:Path += ";C:\Ruby192\bin"
-        [System.Environment]::SetEnvironmentVariable("PATH", $env:Path, "User")
+    if (-not (isItThere("rake")))  {
+		if (-not (isItThere("ruby")))  {
+			Write-Progress "Ensuring that system packages are available" "Downloading Ruby"
+			$clnt = new-object System.Net.WebClient
+			$url = "http://rubyforge.org/frs/download.php/75127/rubyinstaller-1.9.2-p290.exe"
+			$file = ".\ruby_installer.exe"
+			$clnt.DownloadFile($url,$file)
+			Write-Progress "Ensuring that system packages are available" "Running installer"
+			$install = $file + " /silent"
+			cmd /c $install
+			del $file
+			$env:Path += ";C:\Ruby192\bin"
+			[System.Environment]::SetEnvironmentVariable("PATH", $env:Path, "User")
+		}
         # try again
         Write-Progress "Ensuring that system packages are available" "Checking for Rake"
         cmd /c "gem install --remote rake" | out-null
