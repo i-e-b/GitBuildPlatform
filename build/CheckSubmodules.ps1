@@ -10,7 +10,11 @@ Write-Host "Adding submodules" -fo cyan
 cd $baseDir
 
 function AddSubmodule($module, $to) {
-	git submodule update --init $module "$to"
+	if (-not (Test-Path "$directory")) {
+		git submodule add  $module "$to"
+	} else {
+		git submodule update --init 
+	}
 }
 
 function CheckoutMaster($directory) {

@@ -26,6 +26,15 @@ function Update($directory) {
 	popd
 }
 
+function Count-Object() {begin {$count = 0};process {$count += 1};end {$count}}
+function AnyModulesMissing() {
+	return (gc "$rulesDir\Modules.rule" | %{($_.Split('='))[0].Trim()} | ?{ -not (Test-Path "$baseDir\$_")} | Count-Object) -ne 0
+}
+
+if (AnyModulesMissing) {
+	& "$script_dir\CheckoutSubmodules.ps1"
+}
+
 gc "$rulesDir\Modules.rule" | %{
 	$data = $_.Split('=')
 	$directory = $data[0].Trim()
