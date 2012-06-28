@@ -32,7 +32,7 @@ function AnyModulesMissing() {
 }
 
 if (AnyModulesMissing) {
-	& "$script_dir\CheckoutSubmodules.ps1"
+	& "$script_dir\CheckSubmodules.ps1"
 }
 
 gc "$rulesDir\Modules.rule" | %{
