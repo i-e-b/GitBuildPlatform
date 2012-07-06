@@ -1,6 +1,6 @@
 $script_dir = Split-Path -parent $MyInvocation.MyCommand.Definition
 $baseDir = Join-Path -path $script_dir ".." -resolve
-$rulesDir = Join-Path -path $script_dir "..\rules" -resolve
+$rulesDir = Join-Path -path $script_dir "..\_rules" -resolve
 $ErrorView = "CategoryView"
 
 $dependency_path = gc "$rulesDir\DependencyPath.rule"
