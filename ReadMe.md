@@ -6,13 +6,15 @@ Provides a cross-solution build environment for local development which can be m
 
 How to setup
 ============
-Change ".build/EnsureDependencies.ps1" to match your requirements
-Change ".rules/Modules.rule" to includ all your solution repos as "Folder = repourl" lines
-Update ".rules/DependencyPatterns.rule" and ".rules/DependencyPath.rule" to match your binary and library-folder conventions.
+Change "_build/EnsureDependencies.ps1" to match your requirements
+Change "_rules/Modules.rule" to includ all your solution repos as "Folder = repourl" lines
+Update "_rules/DependencyPatterns.rule" and "_rules/DependencyPath.rule" to match your binary and library-folder conventions.
 
 How to use
 ==========
 Run Setup.cmd at least once and ensure it has run successfully.
 Run Platform_build.cmd before EVERY bit of work you do.
 
-Make sure you commit your changes, checking submodules. Commit your dependencies.
+Make sure you commit your changes, checking each sub repository. Commit your dependencies.
+
+The root level ignore is set to '*'; you'll have to add any additions to the base by hand.
