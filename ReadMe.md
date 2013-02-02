@@ -6,9 +6,9 @@ Provides a cross-solution build environment for local development which can be m
 
 How to setup
 ============
-Change "_build/EnsureDependencies.ps1" to match your requirements
-Change "_rules/Modules.rule" to includ all your solution repos as "Folder = repourl" lines
-Update "_rules/DependencyPatterns.rule" and "_rules/DependencyPath.rule" to match your binary and library-folder conventions.
+* Change "_build/EnsureDependencies.ps1" to match your requirements
+* Change "_rules/Modules.rule" to include all your solution repos as "Folder = repourl" lines
+* Update "_rules/DependencyPatterns.rule" and "_rules/DependencyPath.rule" to match your binary and library-folder conventions.
 
 How to use
 ==========
