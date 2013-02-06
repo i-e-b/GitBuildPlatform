@@ -17,3 +17,5 @@ StartSshAgent.ps1 (called by most scripts): Ensure that an SSH agent is ready (s
 
 UpdateAll.ps1 (called by Platform_Build.cmd): Update all Build Modules, stashing and re-applying changes if needed.
 
+UpdateBuildScriptsViaNuget.ps1 (called by Platform-Build.cmd) : Update build scripts from the nuget repo hosted on WILLM
+

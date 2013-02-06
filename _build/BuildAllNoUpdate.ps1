@@ -19,9 +19,10 @@ function Build($directory) {
 }
 
 function DistributeBinaryDependencies($directory) {
-	# TODO: create a pattern file to read for these
+	$endOfDir = $directory.Split(@('/', '\')) | select -last 1
+	echo "Synchronising from $baseDir : $endOfDir  -> $dependency_path"
 	gc "$rulesDir\DependencyPatterns.rule" | %{
-		& "$script_dir\Tools\SyncDeps.exe" $baseDir "*\$directory\*\bin\Release\$_" "*\$dependency_path\$_"
+		& "$script_dir\Tools\SyncDeps.exe" -base $baseDir  -src "*\$endOfDir\*\bin\*\$_" -dst "*\$dependency_path\$_" -masters "Platform\Messaging\merged" -masters "Platform\ServiceStack\merged" #-v -log "$baseDir\$directory\Build\Output\DepsLog.txt"
 	}
 }
 
@@ -37,14 +38,6 @@ gc "$rulesDir\Modules.rule" | %{
 	
 	BuildAndDistribute("$directory")
 }
-
-# If you know which projects need to distribute dependencies, you can optimise by hardcoding like this:
-#BuildAndDistribute("a")
-#Build("b")
-#Build("c")
-#BuildAndDistribute("d")
-#BuildAndDistribute("e")
-#Build("f")
 
 
 Write-Host "----[ All Builds Complete ]----" -fo green
